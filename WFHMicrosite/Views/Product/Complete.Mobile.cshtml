@@ -1,0 +1,174 @@
+﻿@model WFHMicrosite.Models.UserProductModel
+
+@{
+    ViewData["Title"] = "Product Selection";
+}
+
+@section head {
+    <style type="text/css">
+        body {
+            background-color: lightgray;
+        }
+    </style>
+}
+
+<form id="complete">
+    <br />
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label style="font-size:150%; font-weight:bold">@Model.Product.Chair</label>
+            </div>
+            <div class="form-group" id="divImage">
+                @await Html.PartialAsync("_Chair", Model.ProductImage)
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group" style="height:50px">
+                <label>&nbsp;</label>
+            </div>
+            <div class="form-group" style="height:500px">
+                <table style="border: 1px solid white; border-spacing: 20px">
+                    <tr>
+                        <td colspan="3"><label>FABRIC</label></td>
+                    </tr>
+                    <tr>
+                        @foreach (var item in Model.FabricOptions)
+                        {
+                            if (item.Default)
+                            {
+                        <td>
+                            <label>
+                                <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;&nbsp;&nbsp;<br />
+                                <input type="radio" name="Fabric" value="@item.ProductOptionId" id="Fabric@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
+                            </label>
+                        </td>
+                            }
+                        }
+                    </tr>
+                    <tr>
+                        <td colspan="3"><label>MESH</label></td>
+                    </tr>
+                    <tr>
+                        @foreach (var item in Model.MeshOptions)
+                        {
+                            if (item.Default)
+                            {
+                        <td>
+                            <label>
+                                <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
+                                <input type="radio" name="Mesh" value="@item.ProductOptionId" id="Mesh@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
+                            </label>
+                        </td>
+                            }
+                        }
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-2" style="border-right: 1px solid white; border-spacing: 20px">
+            <div class="form-group" style="height:150px">
+                <label>&nbsp;</label>
+            </div>
+            <div class="form-group" style="height:400px">
+                <table style="background-color: white; border-spacing: 20px">
+                    <tr>
+                        <td><input type="button" id="btnInstall" value="INSTALL GUIDE" style="color: white;background-color: gray; width: 200px" /></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" id="btnPrint" value="PRINT USER GUIDE" style="color: white;background-color: gray; width: 200px" /></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" id="btnVideo" value="VIDEO USER GUIDE" style="color: white;background-color: gray; width: 200px" /></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" id="btnSitFit" value="SIT FIT TIPS" style="color: white;background-color: gray; width: 200px" /></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group" style="height: 50px">
+                <label>&nbsp;</label>
+            </div>
+            <div class="form-group">
+                <table>
+                    <tr>
+                        <td>
+                            @if (Model.User.Commercial == false)
+                            {
+                            <label><input type="radio" name="AddressType" value="residential" id="AddressType1" checked="checked" />&nbsp;Residential</label>
+                            }
+                            else
+                            {
+                            <label><input type="radio" name="AddressType" value="commercial" id="AddressType2" checked="checked" />&nbsp;Commerical</label>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input asp-for="User.AttnName" placeholder="NAME" class="form-control" style="width: 400px" readonly="readonly" />
+                            <span asp-validation-for="User.AttnName" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input asp-for="User.PhoneNumber" placeholder="PHONE #" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input asp-for="User.Address1" placeholder="STREET" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="User.Address1" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input asp-for="User.Address2" placeholder="APT/HOUSE #" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="User.Address2" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input asp-for="User.City" placeholder="CITY" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="User.City" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input asp-for="User.ProvinceState" placeholder="PROVINCE" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="User.ProvinceState" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input asp-for="User.PostalZip" placeholder="POSTAL CODE" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="User.PostalZip" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input asp-for="User.Country" placeholder="COUNTRY" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="User.Country" class="text-danger"></span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label style="font-size:150%; font-weight:bold">@Model.Status</label>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $('#copyRite').css('color', 'black');
+    </script>
+}

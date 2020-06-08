@@ -1,0 +1,38 @@
+﻿@model WFHMicrosite.Models.LoginModel
+
+@{
+    ViewData["Title"] = "Log In";
+}
+
+
+@section head {
+    <style type="text/css">
+        body {
+            background-image: url('/wfhmicrosite/images/background.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+        }
+    </style>
+}
+<form id="account" method="post">
+    <input type="hidden" asp-for="@Model.ProductId" />
+    <table style="position: absolute; height: 80%; width: 95%; vertical-align:middle; text-align:center">
+        <tr>
+            <td>
+                <p style="color: white; font-weight: bolder; font-size: 400%; line-height:65px">WORK FROM HOME<br />CHAIR SELECTOR</p>
+                <br />
+                <input asp-for="EmailAddress" type="email" placeholder="EMAIL" style="width:300px" />
+                <input asp-for="PIN" type="password" placeholder="UNIQUE PIN" />&nbsp;&nbsp;
+                <button type="submit" class="btn btn-primary btn-sm" style="background-color: gray">SUBMIT</button>
+                <br /><br />
+                <label style="color:white; font-size:110%">@ViewBag.ErrorResults</label>
+            </td>
+        </tr>
+    </table>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

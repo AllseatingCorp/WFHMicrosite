@@ -1,0 +1,325 @@
+﻿@model WFHMicrosite.Models.UserProductModel
+
+@{
+    ViewData["Title"] = "Product Selection";
+}
+
+@section head {
+    <style type="text/css">
+        body {
+            background-color: rgb(219, 221, 221);
+        }
+    </style>
+}
+
+<form id="account" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="@Model.Product.ProductId" />
+    <input type="hidden" asp-for="@Model.Product.InstallGuide" />
+    <input type="hidden" asp-for="@Model.Product.UserGuide" />
+    <input type="hidden" asp-for="@Model.Product.VideoUrl" />
+    <input type="hidden" asp-for="@Model.FabricId" />
+    <input type="hidden" asp-for="@Model.MeshId" />
+    <input type="hidden" asp-for="@Model.User.UserId" />
+    <input type="hidden" asp-for="@Model.User.Completed" />
+    <input type="hidden" asp-for="@Model.User.EmailAddress" />
+    <input type="hidden" asp-for="@Model.User.Emailed" />
+    <input type="hidden" asp-for="@Model.User.InProduction" />
+    <input type="hidden" asp-for="@Model.User.Pin" />
+    <input type="hidden" asp-for="@Model.User.ProductId" />
+    <input type="hidden" asp-for="@Model.User.Shipped" />
+    <input type="hidden" asp-for="@Model.User.Commercial" />
+    <input type="hidden" asp-for="@Model.User.Language" />
+    <br />
+    <div style="max-width:1800px; margin:auto">
+        <table width="100%">
+            <tr>
+                <td colspan="2">
+                    <label style="font-size:150%; color:rgb(68,71,82); font-weight:bold">@Model.Product.Chair</label>
+                </td>
+                <td align="right" style="font-size:small">
+                    <label><input id="rbLanguage1" type="radio" name="Language" value="English" />&nbsp;<label id="language1" for="rbLanguage1">ENGLISH</label></label>@Html.Raw("&nbsp;&nbsp;")
+                    <label><input id="rbLanguage2" type="radio" name="Language" value="French" />&nbsp;<label id="language2" for="rbLanguage2">FRENCH</label></label>
+                </td>
+            </tr>
+            <tr>
+                <td width="30%">
+                    <div id="divImage">@await Html.PartialAsync("_Chair", Model.ProductImage)</div>
+                </td>
+                <td width="30%" style="vertical-align:top">
+                    <table style="border: 1px solid white; border-spacing: 20px">
+                        <tr>
+                            <td colspan="3"><label id="fabric">FABRIC</label></td>
+                        </tr>
+                        <tr>
+                            @foreach (var item in Model.FabricOptions)
+                            {
+                            <td>
+                                <label>
+                                    <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;&nbsp;&nbsp;<br />
+                                    <input type="radio" name="Fabric" value="@item.ProductOptionId" id="Fabric@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
+                                </label>
+                            </td>
+                            }
+                        </tr>
+                        <tr>
+                            <td colspan="3"><label id="mesh">MESH</label></td>
+                        </tr>
+                        <tr>
+                            @foreach (var item in Model.MeshOptions)
+                            {
+                            <td>
+                                <label>
+                                    <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
+                                    <input type="radio" name="Mesh" value="@item.ProductOptionId" id="Mesh@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
+                                </label>
+                            </td>
+                            }
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <label id="support">SUPPORT</label>
+                                <table style="background-color: white; border-spacing: 50px">
+                                    <tr>
+                                        <td><input type="button" id="btnInstall" value="ASSEMBLY INSTRUCTIONS" style="color: white;background-color: gray; width: 250px" onclick="ShowInstallGuide();" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="button" id="btnUser" value="USER GUIDE" style="color: white;background-color: gray; width: 250px" onclick="ShowUserGuide();" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="button" id="btnVideo" value="VIDEO USER GUIDE" style="color: white; background-color: gray; width: 250px" onclick="ShowUserVideo();" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="button" id="btnSitFit" value="SIT FIT TIPS" style="color: white;background-color: gray; width: 250px" onclick="ShowSitFitTips();" /></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td width="45%" style="vertical-align:top">
+                    <table style="width: 550px">
+                        <tr>
+                            <td style="width: 550px">
+                                <label><input id="rbType1" type="radio" name="AddressType" value="residential" />&nbsp;<label id="addrType1" for="rbType1">RESIDENTIAL</label></label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <label><input id="rbType2" type="radio" name="AddressType" value="commercial" />&nbsp;<label id="addrType2" for="rbType2">COMMERCIAL</label></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input id="findAddress" placeholder="Enter your address to search" class="form-control" onfocus="this.value=''" autofill="off" autocomplete="off" /><br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input asp-for="User.AttnName" placeholder="NAME" class="form-control text-uppercase" />
+                                <span asp-validation-for="User.AttnName" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input asp-for="User.PhoneNumber" type="tel" placeholder="PHONE #" class="form-control text-uppercase" />
+                                <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input asp-for="User.Address1" placeholder="STREET" class="form-control text-uppercase" />
+                                <span asp-validation-for="User.Address1" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input asp-for="User.Address2" placeholder="APT/HOUSE #" class="form-control text-uppercase" />
+                                <span asp-validation-for="User.Address2" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input asp-for="User.City" placeholder="CITY" class="form-control text-uppercase" />
+                                <span asp-validation-for="User.City" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input asp-for="User.ProvinceState" placeholder="PROVINCE" class="form-control text-uppercase" />
+                                <span asp-validation-for="User.ProvinceState" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input asp-for="User.PostalZip" placeholder="POSTAL CODE" class="form-control text-uppercase" />
+                                <span asp-validation-for="User.PostalZip" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input asp-for="User.Country" placeholder="COUNTRY" class="form-control text-uppercase" />
+                                <span asp-validation-for="User.Country" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table width="100%">
+                                    <tr>
+                                        <td width="60%" style="vertical-align:bottom">
+                                            <p id="message" style="font-size:110%; Line-height:20px">Ensure all selections are<br />made to submit successfully.</p>
+                                        </td>
+                                        <td align="right">
+                                            <button type="submit" class="btn btn-primary btn-sm" style="width:75px; background-color: gray">SUBMIT</button>
+                                            <button type="button" class="btn btn-secondary btn-sm" id="btnReset" onclick="reloadPage();" style="width:75px; background-color: gray">RESET</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <label style="color:green; font-size:110%">@ViewBag.SuccessResults</label>
+                                            <label style="color:red; font-size:110%">@ViewBag.ErrorResults</label>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#copyRite').css('color', 'black');
+            $('#findAddress').val("");
+            SetLanguage();
+            if ($('#User_Commercial').val().toLowerCase() == "false") {
+                $('#rbType1').prop('checked', true);
+            }
+            else {
+                $('#rbType2').prop('checked', true);
+            }
+        });
+
+        // Prevent enter key press from submitting form
+        $(document).on("keydown", "input", function (e) {
+            if (e.which == 13) e.preventDefault();
+        });
+
+        $('input[name=Fabric]').change(function () {
+            GetImage();
+        });
+        $('input[name=Mesh]').change(function () {
+            GetImage();
+        });
+
+        $('input[name=AddressType]').change(function () {
+            var commercial = false;
+            if ($('input[name=AddressType]:checked').val() == "commercial") {
+                commercial = true;
+            }
+            $('#User_Commercial').val(commercial);
+        });
+
+        $('input[name=Language]').change(function () {
+            $('#User_Language').val($('input[name=Language]:checked').val());
+            SetLanguage();
+        });
+
+        function reloadPage() {
+            location.reload();
+        }
+
+        function SetLanguage() {
+            if ($('#User_Language').val() == "English") {
+                $('#rbLanguage1').prop('checked', true);
+                $('#language1').html("ENGLISH");
+                $('#language2').html("FRENCH");
+                $('#fabric').html("FABRIC");
+                $('#mesh').html("MESH");
+                $('#support').html("SUPPORT");
+                $('#btnInstall').val("ASSEMBLY INSTRUCTIONS");
+                $('#btnUser').val("USER GUIDE");
+                $('#btnVideo').val("VIDEO USER GUIDE");
+                $('#addrType1').html("RESIDENTIAL");
+                $('#addrType2').html("COMMERCIAL");
+                $('#message').html("Ensure all selections are<br/>made to submit successfully.");
+            }
+            else {
+                $('#rbLanguage2').prop('checked', true);
+                $('#language1').html("ANGLAIS");
+                $('#language2').html("FRANÇAIS");
+                $('#fabric').html("EN TISSU");
+                $('#mesh').html("ENGRENER");
+                $('#support').html("LE SUPPORT");
+                $('#btnInstall').val("INSTRUCTIONS DE MONTAGE");
+                $('#btnUser').val("MODE D'EMPLOI");
+                $('#btnVideo').val("GUIDE D'UTILISATION VIDÉO");
+                $('#addrType1').html("RÉSIDENTIEL");
+                $('#addrType2').html("COMMERCIAL");
+                $('#message').html("Assurez-vous que toutes les sélections<br/>sont faites pour soumettre avec succès.");
+            }
+        }
+
+        function GetImage() {
+            var product = $('#Product_ProductId').val();
+            var fabric = $('input[name=Fabric]:checked').val();
+            var mesh = $('input[name=Mesh]:checked').val();
+            $('#FabricId').val(fabric);
+            $('#MeshId').val(mesh);
+            $.get("@Url.Action("ChairPartial", "Product")", { product: product, option1: fabric, option2: mesh }, function (data) {
+                $('#divImage').html(data);
+            });
+        }
+
+        $("#findAddress").autocomplete({
+            source: function (request, response) {
+                var address = $("#findAddress").val().replace(' ', '+');
+                $.get("@Url.Action("AddressList", "Product")", { address: address }, function (data) {
+                    response(data);
+                });
+            },
+            minLength: 5,
+            open: function (event, ui) {
+                $(this).autocomplete('widget').css('z-index', 1050);
+                return false;
+            },
+            select: function (event, ui) {
+                if (ui.item) {
+                    var address = ui.item.value.split(",");
+                    $('#User_Address1').val(address[0]);
+                    $('#User_Address2').val("");
+                    $('#User_City').val(address[1]);
+                    $('#User_ProvinceState').val(address[2].substring(1, 3));
+                    $('#User_PostalZip').val(address[2].substring(4));
+                    $('#User_Country').val(address[3]);
+                    $('#findAddress').val("");
+                }
+            }
+        });
+
+        function ShowInstallGuide() {
+            if ($('#Product_InstallGuide').val() != "") {
+                var url = "https://wfh.allseating.com/wfhmicrosite/pdfs/" + $('#Product_InstallGuide').val();
+                window.open(url, "_blank");
+            }
+        }
+
+        function ShowUserGuide() {
+            if ($('#Product_UserGuide').val() != "") {
+                var url = "https://wfh.allseating.com/wfhmicrosite/pdfs/" + $('#Product_UserGuide').val();
+                window.open(url, "_blank");
+            }
+        }
+
+        function ShowUserVideo() {
+            if ($('#Product_VideoUrl').val() != "") {
+                window.open($('#Product_VideoUrl').val(), "_blank", "width='987',height='740',allow='accelerometer',autoplay='yes'");
+            }
+        }
+
+        function ShowSitFitTips() {
+
+        }
+    </script>
+}

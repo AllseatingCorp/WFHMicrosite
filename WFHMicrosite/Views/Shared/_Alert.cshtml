@@ -1,0 +1,14 @@
+﻿@if (ViewBag.Messages != null)
+{
+    @foreach (var msg in ViewBag.Messages)
+    {
+        <div class="alert alert-@msg.AlertType alert-dismissible fade in" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <p><strong>@msg.AlertTitle</strong> @msg.AlertMessage</p>
+        </div>
+
+
+    }
+}
