@@ -12,6 +12,7 @@ namespace WFHMicrosite.Models
         public string Name { get; set; }
         public string Ponumber { get; set; }
         public string Chair { get; set; }
+        public string Language { get; set; }
         public string LogoFile { get; set; }
         public byte[] LogoImage { get; set; }
         public string LogoFile2 { get; set; }
@@ -19,6 +20,8 @@ namespace WFHMicrosite.Models
         public string InstallGuide { get; set; }
         public string UserGuide { get; set; }
         public string VideoUrl { get; set; }
-        public string TrackingNumber { get; set; }
+        public string SitFitGuide { get; set; }
+        public bool VerifyOnly { get; set; }
+        public bool Completed { get; set; }
     }
 }

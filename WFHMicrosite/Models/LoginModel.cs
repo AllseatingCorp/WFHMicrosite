@@ -17,5 +17,6 @@ namespace WFHMicrosite.Models
         public int? UserId { get; set; }
         public int ProductId { get; set; }
         public byte[] Logo { get; set; }
+        public string Language { get; set; }
     }
 }

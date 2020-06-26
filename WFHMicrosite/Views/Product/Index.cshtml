@@ -18,8 +18,12 @@
     <input type="hidden" asp-for="@Model.Product.InstallGuide" />
     <input type="hidden" asp-for="@Model.Product.UserGuide" />
     <input type="hidden" asp-for="@Model.Product.VideoUrl" />
+    <input type="hidden" asp-for="@Model.Product.SitFitGuide" />
+    <input type="hidden" asp-for="@Model.Product.Language" />
+    <input type="hidden" asp-for="@Model.Product.VerifyOnly" />
     <input type="hidden" asp-for="@Model.FabricId" />
     <input type="hidden" asp-for="@Model.MeshId" />
+    <input type="hidden" asp-for="@Model.FrameId" />
     <input type="hidden" asp-for="@Model.User.UserId" />
     <input type="hidden" asp-for="@Model.User.Completed" />
     <input type="hidden" asp-for="@Model.User.EmailAddress" />
@@ -48,49 +52,84 @@
                 </td>
                 <td width="30%" style="vertical-align:top">
                     <table style="border: 1px solid white; border-spacing: 20px">
-                        <tr>
-                            <td colspan="3"><label id="fabric">FABRIC</label></td>
-                        </tr>
-                        <tr>
-                            @foreach (var item in Model.FabricOptions)
+                        @if (Model.FabricId != 0)
+                        {
+                            <tr>
+                                <td colspan="3"><label id="fabric">FABRIC</label></td>
+                            </tr>
+                            var grouped = Model.FabricOptions.Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
+                            @foreach (var items in grouped)
                             {
-                            <td>
-                                <label>
-                                    <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;&nbsp;&nbsp;<br />
-                                    <input type="radio" name="Fabric" value="@item.ProductOptionId" id="Fabric@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
-                                </label>
-                            </td>
+                                <tr>
+                                    @foreach (var item in items)
+                                    {
+                                        <td>
+                                            <label>
+                                                <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
+                                                <input type="radio" name="Fabric" value="@item.ProductOptionId" id="Fabric@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
+                                            </label>
+                                        </td>
+                                    }
+                                </tr>
                             }
-                        </tr>
-                        <tr>
-                            <td colspan="3"><label id="mesh">MESH</label></td>
-                        </tr>
-                        <tr>
-                            @foreach (var item in Model.MeshOptions)
+                        }
+                        @if (Model.MeshId != 0)
+                        {
+                            <tr>
+                                <td colspan="3"><label id="mesh">MESH</label></td>
+                            </tr>
+                            var grouped = Model.MeshOptions.Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
+                            @foreach (var items in grouped)
                             {
-                            <td>
-                                <label>
-                                    <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
-                                    <input type="radio" name="Mesh" value="@item.ProductOptionId" id="Mesh@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
-                                </label>
-                            </td>
+                                <tr>
+                                    @foreach (var item in items)
+                                    {
+                                        <td>
+                                            <label>
+                                                <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
+                                                <input type="radio" name="Mesh" value="@item.ProductOptionId" id="Fabric@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
+                                            </label>
+                                        </td>
+                                    }
+                                </tr>
                             }
-                        </tr>
+                        }
+                        @if (Model.FrameId != 0)
+                        {
+                            <tr>
+                                <td colspan="3"><label id="frame">FRAME</label></td>
+                            </tr>
+                            var grouped = Model.FrameOptions.Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
+                            @foreach (var items in grouped)
+                            {
+                                <tr>
+                                    @foreach (var item in items)
+                                    {
+                                        <td>
+                                            <label>
+                                                <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
+                                                <input type="radio" name="Frame" value="@item.ProductOptionId" id="Fabric@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
+                                            </label>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        }
                         <tr>
                             <td colspan="3">
                                 <label id="support">SUPPORT</label>
-                                <table style="background-color: white; border-spacing: 50px">
+                                <table style="background-color: white; border-spacing: 50px; width: 100%">
                                     <tr>
-                                        <td><input type="button" id="btnInstall" value="ASSEMBLY INSTRUCTIONS" style="color: white;background-color: gray; width: 250px" onclick="ShowInstallGuide();" /></td>
+                                        <td><input type="button" id="btnInstall" value="ASSEMBLY INSTRUCTIONS" style="color: white;background-color: gray; width: 100%" onclick="ShowInstallGuide();" /></td>
                                     </tr>
                                     <tr>
-                                        <td><input type="button" id="btnUser" value="USER GUIDE" style="color: white;background-color: gray; width: 250px" onclick="ShowUserGuide();" /></td>
+                                        <td><input type="button" id="btnUser" value="USER GUIDE" style="color: white;background-color: gray; width: 100%" onclick="ShowUserGuide();" /></td>
                                     </tr>
                                     <tr>
-                                        <td><input type="button" id="btnVideo" value="VIDEO USER GUIDE" style="color: white; background-color: gray; width: 250px" onclick="ShowUserVideo();" /></td>
+                                        <td><input type="button" id="btnVideo" value="VIDEO USER GUIDE" style="color: white; background-color: gray; width: 100%" onclick="ShowUserVideo();" /></td>
                                     </tr>
                                     <tr>
-                                        <td><input type="button" id="btnSitFit" value="SIT FIT TIPS" style="color: white;background-color: gray; width: 250px" onclick="ShowSitFitTips();" /></td>
+                                        <td><input type="button" id="btnSitFit" value="SIT FIT TIPS" style="color: white;background-color: gray; width: 100%" onclick="ShowSitFitTips();" /></td>
                                     </tr>
                                 </table>
                             </td>
@@ -100,6 +139,12 @@
                 <td width="45%" style="vertical-align:top">
                     <table style="width: 550px">
                         <tr>
+                            <td>
+                                <p id="impMessage" style="font-size:110%; font-weight:bold; Line-height:20px">Please remember click the Verify button to complete order!</p>
+                                <label id="impMessage" t /><br />
+                            </td>
+                        </tr>
+                        <tr>
                             <td style="width: 550px">
                                 <label><input id="rbType1" type="radio" name="AddressType" value="residential" />&nbsp;<label id="addrType1" for="rbType1">RESIDENTIAL</label></label>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <label><input id="rbType2" type="radio" name="AddressType" value="commercial" />&nbsp;<label id="addrType2" for="rbType2">COMMERCIAL</label></label>
@@ -107,7 +152,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <input id="findAddress" placeholder="Enter your address to search" class="form-control" onfocus="this.value=''" autofill="off" autocomplete="off" /><br />
+                                <input id="findAddress" placeholder="Enter your address to search" class="form-control" onfocus="this.value=''" autofill="off" autocomplete="off" hidden="hidden" /><br />
                             </td>
                         </tr>
                         <tr>
@@ -160,20 +205,26 @@
                         </tr>
                         <tr>
                             <td>
+                                <input asp-for="User.SpecialInstructions" placeholder="SPECIAL INSTRUCTIONS" class="form-control text-uppercase" />
+                                <span asp-validation-for="User.SpecialInstructions" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 <table width="100%">
                                     <tr>
                                         <td width="60%" style="vertical-align:bottom">
                                             <p id="message" style="font-size:110%; Line-height:20px">Ensure all selections are<br />made to submit successfully.</p>
                                         </td>
                                         <td align="right">
-                                            <button type="submit" class="btn btn-primary btn-sm" style="width:75px; background-color: gray">SUBMIT</button>
-                                            <button type="button" class="btn btn-secondary btn-sm" id="btnReset" onclick="reloadPage();" style="width:75px; background-color: gray">RESET</button>
+                                            <button type="submit" id="btnSubmit" class="btn btn-primary btn-sm" style="background-color: gray">SUBMIT</button>
+                                            <button type="button" id="btnReset" class="btn btn-secondary btn-sm" onclick="reloadPage();" style="background-color: gray">RESET</button>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            <label style="color:green; font-size:110%">@ViewBag.SuccessResults</label>
-                                            <label style="color:red; font-size:110%">@ViewBag.ErrorResults</label>
+                                            <label id="successResults" style="color:green; font-size:110%">@ViewBag.SuccessResults</label>
+                                            <label id="errorResults" style="color:red; font-size:110%">@ViewBag.ErrorResults</label>
                                         </td>
                                     </tr>
                                 </table>
@@ -212,6 +263,9 @@
         $('input[name=Mesh]').change(function () {
             GetImage();
         });
+        $('input[name=Frame]').change(function () {
+            GetImage();
+        });
 
         $('input[name=AddressType]').change(function () {
             var commercial = false;
@@ -224,6 +278,8 @@
         $('input[name=Language]').change(function () {
             $('#User_Language').val($('input[name=Language]:checked').val());
             SetLanguage();
+            $('#successResults').html("");
+            $('#errorResults').html("");
         });
 
         function reloadPage() {
@@ -237,13 +293,32 @@
                 $('#language2').html("FRENCH");
                 $('#fabric').html("FABRIC");
                 $('#mesh').html("MESH");
+                $('#frame').html("FRAME");
                 $('#support').html("SUPPORT");
                 $('#btnInstall').val("ASSEMBLY INSTRUCTIONS");
                 $('#btnUser').val("USER GUIDE");
                 $('#btnVideo').val("VIDEO USER GUIDE");
                 $('#addrType1').html("RESIDENTIAL");
                 $('#addrType2').html("COMMERCIAL");
+                $('#findAddress').attr("placeholder", "Enter your address to search");
+                $('#User_AttnName').attr("placeholder", "NAME");
+                $('#User_PhoneNumber').attr("placeholder", "PHONE #");
+                $('#User_Address1').attr("placeholder", "STREET");
+                $('#User_Address2').attr("placeholder", "APT/HOUSE #");
+                $('#User_City').attr("placeholder", "CITY");
+                $('#User_ProvinceState').attr("placeholder", "PROVINCE");
+                $('#User_PostalZip').attr("placeholder", "POSTAL CODE");
+                $('#User_Country').attr("placeholder", "COUNTRY");
+                $('#User_SpecialInstructions').attr("placeholder", "SPECIAL INSTRUCTIONS");
+                if ($('#Product_VerifyOnly').val().toLowerCase() == "true") {
+                    $('#btnSubmit').html("VERIFY");
+                }
+                else {
+                    $('#btnSubmit').html("SUBMIT");
+                }
+                $('#btnReset').html("RESET");
                 $('#message').html("Ensure all selections are<br/>made to submit successfully.");
+                $('#impMessage').html("Please remember click the Verify button to complete order!");
             }
             else {
                 $('#rbLanguage2').prop('checked', true);
@@ -251,13 +326,32 @@
                 $('#language2').html("FRANÇAIS");
                 $('#fabric').html("EN TISSU");
                 $('#mesh').html("ENGRENER");
+                $('#frame').html("LE CHÂSSIS");
                 $('#support').html("LE SUPPORT");
                 $('#btnInstall').val("INSTRUCTIONS DE MONTAGE");
                 $('#btnUser').val("MODE D'EMPLOI");
                 $('#btnVideo').val("GUIDE D'UTILISATION VIDÉO");
-                $('#addrType1').html("RÉSIDENTIEL");
-                $('#addrType2').html("COMMERCIAL");
+                $('#addrType1').html("RÉSIDENTIELLE");
+                $('#addrType2').html("COMMERCIALE");
+                $('#findAddress').attr("placeholder", "Entrez votre adresse pour rechercher");
+                $('#User_AttnName').attr("placeholder", "NOM");
+                $('#User_PhoneNumber').attr("placeholder", "TÉLÉPHONE #NOM");
+                $('#User_Address1').attr("placeholder", "RUE");
+                $('#User_Address2').attr("placeholder", "APT / MAISON #");
+                $('#User_City').attr("placeholder", "VILLE");
+                $('#User_ProvinceState').attr("placeholder", "PROVINCE");
+                $('#User_PostalZip').attr("placeholder", "CODE POSTAL");
+                $('#User_Country').attr("placeholder", "LES PAYS");
+                $('#User_SpecialInstructions').attr("placeholder", "INSTRUCTIONS SPÉCIALES");
+                if ($('#Product_VerifyOnly').val().toLowerCase() == "true") {
+                    $('#btnSubmit').html("VÉRIFIER");
+                }
+                else {
+                    $('#btnSubmit').html("SOUMETTRE");
+                }
+                $('#btnReset').html("REMONTER");
                 $('#message').html("Assurez-vous que toutes les sélections<br/>sont faites pour soumettre avec succès.");
+                $('#impMessage').html("N’oubliez pas de cliquer sur le bouton Vérifier pour terminer l’ordre!");
             }
         }
 
@@ -265,9 +359,11 @@
             var product = $('#Product_ProductId').val();
             var fabric = $('input[name=Fabric]:checked').val();
             var mesh = $('input[name=Mesh]:checked').val();
+            var frame = $('input[name=Frame]:checked').val();
             $('#FabricId').val(fabric);
             $('#MeshId').val(mesh);
-            $.get("@Url.Action("ChairPartial", "Product")", { product: product, option1: fabric, option2: mesh }, function (data) {
+            $('#FrameId').val(frame);
+            $.get("@Url.Action("ChairPartial", "Product")", { product: product, option1: fabric, option2: mesh, option3: frame }, function (data) {
                 $('#divImage').html(data);
             });
         }
@@ -300,14 +396,14 @@
 
         function ShowInstallGuide() {
             if ($('#Product_InstallGuide').val() != "") {
-                var url = "https://wfh.allseating.com/wfhmicrosite/pdfs/" + $('#Product_InstallGuide').val();
+                var url = "https://wfh.allseating.com/wfhmicrosite/pdfs/" + $('#User_Language').val() + "/" + $('#Product_InstallGuide').val();
                 window.open(url, "_blank");
             }
         }
 
         function ShowUserGuide() {
             if ($('#Product_UserGuide').val() != "") {
-                var url = "https://wfh.allseating.com/wfhmicrosite/pdfs/" + $('#Product_UserGuide').val();
+                var url = "https://wfh.allseating.com/wfhmicrosite/pdfs/" + $('#User_Language').val() + "/" + $('#Product_UserGuide').val();
                 window.open(url, "_blank");
             }
         }
@@ -319,7 +415,10 @@
         }
 
         function ShowSitFitTips() {
-
+            if ($('#Product_SitFitGuide').val() != "") {
+                var url = "https://wfh.allseating.com/wfhmicrosite/pdfs/" + $('#User_Language').val() + "/" + $('#Product_SitFitGuide').val();
+                window.open(url, "_blank");
+            }
         }
     </script>
 }

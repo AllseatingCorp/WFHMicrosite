@@ -24,8 +24,7 @@ namespace WFHMicrosite.Controllers
         {
             if (id == null)
             {
-                id = 1;
-                //return NotFound();
+                return NotFound();
             }
 
             string apiUrl = configuration.GetValue<string>("AppSettings:ApiUrl");
@@ -34,6 +33,7 @@ namespace WFHMicrosite.Controllers
             if (!string.IsNullOrEmpty(json))
             {
                 ProductModel data = JsonConvert.DeserializeObject<ProductModel>(json);
+                model.Language = data.Language;
                 ViewBag.Logo = data.LogoImage;
                 ViewBag.Logo2 = data.LogoImage2;
                 ViewBag.Name = data.Name;

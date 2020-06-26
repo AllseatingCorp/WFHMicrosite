@@ -11,10 +11,12 @@ namespace WFHMicrosite.Models
         public ProductModel Product { get; set; }
         public List<ProductOptionModel> FabricOptions { get; set; }
         public List<ProductOptionModel> MeshOptions { get; set; }
+        public List<ProductOptionModel> FrameOptions { get; set; }
         public List<UserSelectionModel> UserSelections { get; set; }
         public ProductImageModel ProductImage { get; set; }
         public int FabricId { get; set; }
         public int MeshId { get; set; }
+        public int FrameId { get; set; }
         public string Status { get; set; }
     }
 }

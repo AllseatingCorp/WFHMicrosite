@@ -19,6 +19,7 @@
 
 <form id="account" method="post">
     <input type="hidden" asp-for="@Model.ProductId" />
+    <input type="hidden" asp-for="@Model.Language" />
     <table style="position:absolute; top:40%; height:80%; width:90%; text-align:center">
         <tr>
             <td>
@@ -26,8 +27,8 @@
                 <br />
                 <input asp-for="EmailAddress" type="email" placeholder="EMAIL" style="width:300px" /><br /><br />
                 <input asp-for="PIN" type="password" placeholder="UNIQUE PIN" />&nbsp;&nbsp;
-                <button type="submit" class="btn btn-primary btn-sm" style="background-color: gray">SUBMIT</button>
-                <br/><br/>
+                <button type="submit" id="btnSubmit" class="btn btn-primary btn-sm" style="background-color: gray">SUBMIT</button>
+                <br /><br />
                 <label style="color:white; font-size:110%">@ViewBag.ErrorResults</label>
             </td>
         </tr>
@@ -42,4 +43,24 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            SetLanguage();
+        });
+
+        function SetLanguage() {
+            if ($('#Language').val() == "English") {
+                $('#banner').html("WORK FROM HOME<br />CHAIR SELECTOR");
+                $('#EmailAddress').attr("placeholder", "EMAIL");
+                $('#PIN').attr("placeholder", "UNIQUE PIN");
+                $('#btnSubmit').html("SUBMIT");
+            }
+            else {
+                $('#banner').html("TRAVAIL À DOMICILE<br />SÉLECTEUR DE CHAISE");
+                $('#EmailAddress').attr("placeholder", "EMAIL");
+                $('#PIN').attr("placeholder", "PIN UNIQUE");
+                $('#btnSubmit').html("SOUMETTRE");
+            }
+        }
+    </script>
 }

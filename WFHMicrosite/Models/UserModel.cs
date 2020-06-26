@@ -10,6 +10,7 @@ namespace WFHMicrosite.Models
         public string EmailAddress { get; set; }
         public string Language { get; set; }
         public string Pin { get; set; }
+        public string TrackingNumber { get; set; }
 
         [Display(Name = "Name")]
         [Required]
@@ -41,6 +42,9 @@ namespace WFHMicrosite.Models
         [Display(Name = "Country")]
         [Required]
         public string Country { get; set; }
+
+        [Display(Name = "Instructions")]
+        public string SpecialInstructions { get; set; }
 
         [Display(Name = "Commercial Property")]
         public bool Commercial { get; set; }
