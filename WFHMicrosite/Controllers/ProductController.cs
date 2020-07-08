@@ -134,7 +134,10 @@ namespace WFHMicrosite.Controllers
                 }
             }
 
-            if (update)
+            json = SendWebApiMessage(apiUrl + "products/" + data.User.ProductId, "GET", "");
+            data.Product = JsonConvert.DeserializeObject<ProductModel>(json);
+
+            if (update || data.Product.VerifyOnly)
             {
                 data.User.Completed = DateTime.Now;
                 foreach (var item in userSelections)
@@ -147,8 +150,6 @@ namespace WFHMicrosite.Controllers
             json = JsonConvert.SerializeObject(data.User);
             SendWebApiMessage(apiUrl + "users/" + data.User.UserId, "PUT", json);
 
-            json = SendWebApiMessage(apiUrl + "products/" + data.User.ProductId, "GET", "");
-            data.Product = JsonConvert.DeserializeObject<ProductModel>(json);
             json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Fabric", "GET", "");
             data.FabricOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
             json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Mesh", "GET", "");

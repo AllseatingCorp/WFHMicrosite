@@ -57,7 +57,7 @@
                             <tr>
                                 <td colspan="3"><label id="fabric">FABRIC</label></td>
                             </tr>
-                            var grouped = Model.FabricOptions.Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
+                            var grouped = Model.FabricOptions.Where(d => d.Disabled == false).Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
                             @foreach (var items in grouped)
                             {
                                 <tr>
@@ -78,7 +78,7 @@
                             <tr>
                                 <td colspan="3"><label id="mesh">MESH</label></td>
                             </tr>
-                            var grouped = Model.MeshOptions.Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
+                            var grouped = Model.MeshOptions.Where(d => d.Disabled == false).Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
                             @foreach (var items in grouped)
                             {
                                 <tr>
@@ -99,7 +99,7 @@
                             <tr>
                                 <td colspan="3"><label id="frame">FRAME</label></td>
                             </tr>
-                            var grouped = Model.FrameOptions.Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
+                            var grouped = Model.FrameOptions.Where(d => d.Disabled == false).Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
                             @foreach (var items in grouped)
                             {
                                 <tr>
