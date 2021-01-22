@@ -30,6 +30,10 @@ namespace WFHMicrosite
             services.AddResponsive();
 
             services.AddControllersWithViews();
+
+            services.AddMvc()
+                 .AddXmlSerializerFormatters()
+                 .AddXmlDataContractSerializerFormatters();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

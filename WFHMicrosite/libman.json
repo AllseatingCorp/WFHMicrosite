@@ -5,6 +5,14 @@
     {
       "library": "jqueryui@1.12.1",
       "destination": "wwwroot/lib/jquery-ui/"
+    },
+    {
+      "library": "jquery.colorbox@1.6.4",
+      "destination": "wwwroot/lib/jquery.colorbox/"
+    },
+    {
+      "library": "select2@4.0.13",
+      "destination": "wwwroot/lib/select2/"
     }
   ]
 }

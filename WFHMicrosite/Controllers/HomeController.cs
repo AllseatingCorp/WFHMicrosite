@@ -87,7 +87,7 @@ namespace WFHMicrosite.Controllers
                 StreamReader reader = new StreamReader(response.GetResponseStream());
                 data = reader.ReadToEnd();
             }
-            catch { }
+            catch (Exception ex) { string s = ex.Message; }
             return data;
         }
     }

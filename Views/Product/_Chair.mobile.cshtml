@@ -1,0 +1,6 @@
+﻿@model ProductImageModel
+
+@if (Model != null)
+{
+    <img src="data:image;base64,@System.Convert.ToBase64String(@Model.Image)" style="width:70%; height:80%" />
+}

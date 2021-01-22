@@ -23,6 +23,8 @@
     <input type="hidden" asp-for="@Model.FabricId" />
     <input type="hidden" asp-for="@Model.MeshId" />
     <input type="hidden" asp-for="@Model.FrameId" />
+    <input type="hidden" asp-for="@Model.CastorId" />
+    <input type="hidden" asp-for="@Model.ArmId" />
     <input type="hidden" asp-for="@Model.User.UserId" />
     <input type="hidden" asp-for="@Model.User.Completed" />
     <input type="hidden" asp-for="@Model.User.EmailAddress" />
@@ -51,64 +53,52 @@
                 </td>
                 <td width="30%" style="vertical-align:top">
                     <table style="border: 1px solid white; border-spacing: 20px">
-                        @if (Model.FabricId != 0)
+                        @if (Model.FabricOptions.Count > 1)
                         {
-                            <tr>
-                                <td colspan="3"><label id="fabric">FABRIC</label></td>
+                            <tr style="background-color:white;">
+                                <td align="left"><label id="fabric">FABRIC</label></td>
+                                <td align="right"><img id="fabricimage" src="~/images/@Model.FabricOptions.Where(x => x.ProductOptionId == Model.FabricId).FirstOrDefault().FileName" style="height:30px; width:30px" /></td>
                             </tr>
                             <tr>
-                                @foreach (var item in Model.FabricOptions)
-                                {
-                                    if (item.Default)
-                                    {
-                                        <td>
-                                            <label>
-                                                <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
-                                                <input type="radio" name="Fabric" value="@item.ProductOptionId" id="Fabric@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
-                                            </label>
-                                        </td>
-                                    }
-                                }
+                                <td colspan="2"><select asp-for="FabricId" asp-items="@(new SelectList(Model.FabricOptions, "ProductOptionId","Name"))" style="width: 100%;" disabled="disabled"></select></td>
                             </tr>
                         }
-                        @if (Model.MeshId != 0)
+                        @if (Model.MeshOptions.Count > 1)
                         {
-                            <tr>
-                                <td colspan="3"><label id="mesh">MESH</label></td>
+                            <tr style="background-color:white">
+                                <td align="left"><label id="mesh">MESH</label></td>
+                                <td align="right"><img id="meshimage" src="~/images/@Model.MeshOptions.Where(x => x.ProductOptionId == Model.MeshId).FirstOrDefault().FileName" style="height:30px; width:30px" /></td>
                             </tr>
                             <tr>
-                                @foreach (var item in Model.MeshOptions)
-                                {
-                                    if (item.Default)
-                                    {
-                                        <td>
-                                            <label>
-                                                <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
-                                                <input type="radio" name="Mesh" value="@item.ProductOptionId" id="Mesh@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
-                                            </label>
-                                        </td>
-                                    }
-                                }
+                                <td colspan="2"><select asp-for="MeshId" asp-items="@(new SelectList(Model.MeshOptions, "ProductOptionId","Name"))" style="width: 100%;" disabled="disabled"></select></td>
                             </tr>
                         }
-                        @if (Model.FrameId != 0)
+                        @if (Model.FrameOptions.Count > 1)
                         {
-                            <tr>
-                                <td colspan="3"><label id="frame">FRAME</label></td>
+                            <tr style="background-color:white">
+                                <td align="left"><label id="frame">FRAME</label></td>
+                                <td align="right"><img id="frameimage" src="~/images/@Model.FrameOptions.Where(x => x.ProductOptionId == Model.FrameId).FirstOrDefault().FileName" style="height:30px; width:30px" /></td>
                             </tr>
                             <tr>
-                                @foreach (var item in Model.FrameOptions)
-                                {
-                                    if (item.Default)
-                                    {
-                                        <td>
-                                            <label>
-                                                <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
-                                                <input type="radio" name="Frame" value="@item.ProductOptionId" id="Mesh@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
-                                            </label>
-                                        </td>
-                                    }
-                                }
+                                <td colspan="2"><select asp-for="FrameId" asp-items="@(new SelectList(Model.FrameOptions, "ProductOptionId","Name"))" style="width: 100%" disabled="disabled"></select></td>
+                            </tr>
+                        }
+                        @if (Model.ArmOptions.Count > 1)
+                        {
+                            <tr style="background-color:white">
+                                <td colspan="2" align="left"><label id="arms">ARMS</label></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><select asp-for="ArmId" asp-items="@(new SelectList(Model.ArmOptions, "ProductOptionId","Name"))" style="width: 100%" disabled="disabled"></select></td>
+                            </tr>
+                        }
+                        @if (Model.CastorOptions.Count > 1)
+                        {
+                            <tr style="background-color:white">
+                                <td colspan="2" align="left"><label id="castors">CASTORS</label></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><select asp-for="CastorId" asp-items="@(new SelectList(Model.CastorOptions, "ProductOptionId","Name"))" style="width: 100%" disabled="disabled"></select></td>
                             </tr>
                         }
                         <tr>
@@ -141,11 +131,11 @@
                             <td style="width: 550px">
                                 @if (!Model.User.Commercial)
                                 {
-                                <label id="addrType1">RESIDENTIAL ADDRESS</label>
+                                    <label id="addrType1">RESIDENTIAL ADDRESS</label>
                                 }
                                 else
                                 {
-                                <label id="addrType2">COMMERCIAL ADDRESS</label>
+                                    <label id="addrType2">COMMERCIAL ADDRESS</label>
                                 }
                             </td>
                         </tr>
@@ -241,10 +231,13 @@
                 $('#fabric').html("FABRIC");
                 $('#mesh').html("MESH");
                 $('#frame').html("FRAME");
+                $('#arms').html("ARMS");
+                $('#castors').html("CASTORS");
                 $('#support').html("SUPPORT");
                 $('#btnInstall').val("ASSEMBLY INSTRUCTIONS");
                 $('#btnUser').val("USER GUIDE");
                 $('#btnVideo').val("VIDEO USER GUIDE");
+                $('#btnSitFit').val("SIT FIT TIPS");
                 $('#btnWarranty').val("WARRANTY");
                 $('#addrType1').html("RESIDENTIAL ADDRESS");
                 $('#addrType2').html("COMMERCIAL ADDRESS");
@@ -257,18 +250,37 @@
                 $('#User_PostalZip').attr("placeholder", "POSTAL CODE");
                 $('#User_Country').attr("placeholder", "COUNTRY");
                 $('#User_SpecialInstructions').attr("placeholder", "SPECIAL INSTRUCTIONS");
+                $("#ArmId option").each(function () {
+                    if (this.text == "Sans Accoudoirs") {
+                        this.text = "No Arms";
+                    }
+                    if (this.text == "Accoudoirs 4D") {
+                        this.text = "4D Arms";
+                    }
+                });
+                $("#CastorId option").each(function () {
+                    if (this.text == "Plancher de Tapis") {
+                        this.text = "Carpet";
+                    }
+                    if (this.text == "Planchers à Revêtement Dur") {
+                        this.text = "Hard Surface";
+                    }
+                });
             }
             else {
                 $('#rbLanguage2').prop('checked', true);
                 $('#language1').html("ANGLAIS");
                 $('#language2').html("FRANÇAIS");
-                $('#fabric').html("EN TISSU");
-                $('#mesh').html("ENGRENER");
+                $('#fabric').html("ASSISE EN TISSU");
+                $('#mesh').html("DOSSIER EN MÉCHE");
                 $('#frame').html("LE CHÂSSIS");
+                $('#arms').html("ACCOUDOIRS");
+                $('#castors').html("ROULETTES");
                 $('#support').html("LE SUPPORT");
                 $('#btnInstall').val("INSTRUCTIONS DE MONTAGE");
                 $('#btnUser').val("MODE D'EMPLOI");
                 $('#btnVideo').val("GUIDE D'UTILISATION VIDÉO");
+                $('#btnSitFit').val("CONSEILS ERGO");
                 $('#btnWarranty').val("GARANTIE");
                 $('#addrType1').html("ADRESSE RÉSIDENTIELLE");
                 $('#addrType2').html("ADRESSE COMMERCIALE");
@@ -281,7 +293,25 @@
                 $('#User_PostalZip').attr("placeholder", "CODE POSTAL");
                 $('#User_Country').attr("placeholder", "LES PAYS");
                 $('#User_SpecialInstructions').attr("placeholder", "INSTRUCTIONS SPÉCIALES");
+                $("#ArmId option").each(function () {
+                    if (this.text == "No Arms") {
+                        this.text = "Sans Accoudoirs";
+                    }
+                    if (this.text == "4D Arms") {
+                        this.text = "Accoudoirs 4D";
+                    }
+                });
+                $("#CastorId option").each(function () {
+                    if (this.text == "Carpet") {
+                        this.text = "Plancher de Tapis";
+                    }
+                    if (this.text == "Hard Surface") {
+                        this.text = "Planchers à Revêtement Dur";
+                    }
+                });
             }
+            $("#ArmId").reload();
+            $("#CastorId").reload();
         }
 
         function ShowInstallGuide() {

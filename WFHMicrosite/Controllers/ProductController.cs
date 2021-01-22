@@ -41,6 +41,10 @@ namespace WFHMicrosite.Controllers
             data.MeshOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
             json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Frame", "GET", "");
             data.FrameOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
+            json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Castors", "GET", "");
+            data.CastorOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
+            json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Arms", "GET", "");
+            data.ArmOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
             foreach (var item in data.UserSelections)
             {
                 if (item.Type == "Fabric")
@@ -76,10 +80,32 @@ namespace WFHMicrosite.Controllers
                             frame.Default = false;
                     }
                 }
+                if (item.Type == "Castors")
+                {
+                    data.CastorId = item.ProductOptionId;
+                    foreach (var castor in data.CastorOptions)
+                    {
+                        if (castor.ProductOptionId == data.CastorId)
+                            castor.Default = true;
+                        else
+                            castor.Default = false;
+                    }
+                }
+                if (item.Type == "Arms")
+                {
+                    data.ArmId = item.ProductOptionId;
+                    foreach (var arm in data.ArmOptions)
+                    {
+                        if (arm.ProductOptionId == data.ArmId)
+                            arm.Default = true;
+                        else
+                            arm.Default = false;
+                    }
+                }
             }
             json = SendWebApiMessage(apiUrl + "productimages/" + data.User.ProductId + "/" + data.FabricId + "/" + data.MeshId + "/" + data.FrameId, "GET", "");
             try { data.ProductImage = JsonConvert.DeserializeObject<ProductImageModel>(json); }
-            catch { data.ProductImage = null; }
+            catch { data.ProductImage = new ProductImageModel() { Image = data.Product.Image }; }
 
             if (data.User.InProduction != null)
             {
@@ -132,6 +158,16 @@ namespace WFHMicrosite.Controllers
                     item.ProductOptionId = data.FrameId;
                     update = true;
                 }
+                if (item.Type == "Castors" && item.ProductOptionId != data.CastorId)
+                {
+                    item.ProductOptionId = data.CastorId;
+                    update = true;
+                }
+                if (item.Type == "Arms" && item.ProductOptionId != data.ArmId)
+                {
+                    item.ProductOptionId = data.ArmId;
+                    update = true;
+                }
             }
 
             json = SendWebApiMessage(apiUrl + "products/" + data.User.ProductId, "GET", "");
@@ -139,7 +175,6 @@ namespace WFHMicrosite.Controllers
 
             if (update || data.Product.VerifyOnly)
             {
-                data.User.Completed = DateTime.Now;
                 foreach (var item in userSelections)
                 {
                     json = JsonConvert.SerializeObject(item);
@@ -147,8 +182,11 @@ namespace WFHMicrosite.Controllers
                 }
             }
 
+            data.User.Completed = DateTime.Now;
             json = JsonConvert.SerializeObject(data.User);
-            SendWebApiMessage(apiUrl + "users/" + data.User.UserId, "PUT", json);
+            json = SendWebApiMessage(apiUrl + "users/" + data.User.UserId, "PUT", json);
+            data.User = JsonConvert.DeserializeObject<UserModel>(json);
+            update = true;
 
             json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Fabric", "GET", "");
             data.FabricOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
@@ -156,6 +194,10 @@ namespace WFHMicrosite.Controllers
             data.MeshOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
             json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Frame", "GET", "");
             data.FrameOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
+            json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Castors", "GET", "");
+            data.CastorOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
+            json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Arms", "GET", "");
+            data.ArmOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
             data.UserSelections = userSelections;
             foreach (var item in data.UserSelections)
             {
@@ -192,29 +234,65 @@ namespace WFHMicrosite.Controllers
                             frame.Default = false;
                     }
                 }
+                if (item.Type == "Castors")
+                {
+                    data.CastorId = item.ProductOptionId;
+                    foreach (var castor in data.CastorOptions)
+                    {
+                        if (castor.ProductOptionId == data.CastorId)
+                            castor.Default = true;
+                        else
+                            castor.Default = false;
+                    }
+                }
+                if (item.Type == "Arms")
+                {
+                    data.ArmId = item.ProductOptionId;
+                    foreach (var arm in data.ArmOptions)
+                    {
+                        if (arm.ProductOptionId == data.ArmId)
+                            arm.Default = true;
+                        else
+                            arm.Default = false;
+                    }
+                }
             }
             json = SendWebApiMessage(apiUrl + "productimages/" + data.User.ProductId + "/" + data.FabricId + "/" + data.MeshId + "/" + data.FrameId, "GET", "");
             try { data.ProductImage = JsonConvert.DeserializeObject<ProductImageModel>(json); }
-            catch { data.ProductImage = null; }
+            catch { data.ProductImage = new ProductImageModel() { Image = data.Product.Image }; }
 
             if (update)
             {
-                string result = AddressValidation(data.User, configuration.GetValue<bool>("AppSettings:AddressValidation"));
-                if (string.IsNullOrEmpty(result))
+                if (data.User.Completed != null)
                 {
-                    SendWebApiMessage(apiUrl + "email/" + data.User.UserId + "/2", "GET", "");
-                    if (data.User.Language == "English")
+                    string result = AddressValidation(data.User, configuration.GetValue<bool>("AppSettings:AddressValidation"));
+                    if (string.IsNullOrEmpty(result))
                     {
-                        ViewBag.SuccessResults = "Your selections have been updated!";
+                        SendWebApiMessage(apiUrl + "email/" + data.User.UserId + "/2", "GET", "");
+                        if (data.User.Language == "English")
+                        {
+                            ViewBag.SuccessResults = "Your selections have been updated!";
+                        }
+                        else
+                        {
+                            ViewBag.SuccessResults = "Vos sélections ont été mises à jour!";
+                        }
                     }
                     else
                     {
-                        ViewBag.SuccessResults = "Vos sélections ont été mises à jour!";
+                        ViewBag.ErrorResults = result;
                     }
                 }
                 else
                 {
-                    ViewBag.ErrorResults = result;
+                    if (data.User.Language == "English")
+                    {
+                        ViewBag.ErrorResults = "Your selections have not been updated - Please submit again!";
+                    }
+                    else
+                    {
+                        ViewBag.ErrorResults = "Vos sélections n'ont pas été mises à jour - Veuillez soumettre à nouveau!";
+                    }
                 }
             }
             else
@@ -259,6 +337,12 @@ namespace WFHMicrosite.Controllers
             data.FabricOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
             json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Mesh", "GET", "");
             data.MeshOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
+            json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Frame", "GET", "");
+            data.FrameOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
+            json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Castors", "GET", "");
+            data.CastorOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
+            json = SendWebApiMessage(apiUrl + "productoptions/" + data.User.ProductId + "/Arms", "GET", "");
+            data.ArmOptions = JsonConvert.DeserializeObject<List<ProductOptionModel>>(json);
             foreach (var item in data.UserSelections)
             {
                 if (item.Type == "Fabric")
@@ -294,10 +378,32 @@ namespace WFHMicrosite.Controllers
                             frame.Default = false;
                     }
                 }
+                if (item.Type == "Castors")
+                {
+                    data.CastorId = item.ProductOptionId;
+                    foreach (var castor in data.CastorOptions)
+                    {
+                        if (castor.ProductOptionId == data.CastorId)
+                            castor.Default = true;
+                        else
+                            castor.Default = false;
+                    }
+                }
+                if (item.Type == "Arms")
+                {
+                    data.ArmId = item.ProductOptionId;
+                    foreach (var arm in data.ArmOptions)
+                    {
+                        if (arm.ProductOptionId == data.ArmId)
+                            arm.Default = true;
+                        else
+                            arm.Default = false;
+                    }
+                }
             }
             json = SendWebApiMessage(apiUrl + "productimages/" + data.User.ProductId + "/" + data.FabricId + "/" + data.MeshId + "/" + data.FrameId, "GET", "");
             try { data.ProductImage = JsonConvert.DeserializeObject<ProductImageModel>(json); }
-            catch { data.ProductImage = null; }
+            catch { data.ProductImage = new ProductImageModel() { Image = data.Product.Image }; }
 
             bool status = false;
             DateTime dt;

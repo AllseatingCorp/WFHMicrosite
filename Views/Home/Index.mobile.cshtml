@@ -1,0 +1,84 @@
+﻿@model WFHMicrosite.Models.LoginModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+@section head {
+    <style type="text/css">
+        body {
+            background-image: url('/wfhmicrosite/images/background.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+        }
+    </style>
+}
+
+<form id="index" method="post">
+    <input type="hidden" asp-for="@Model.SiteId" />
+    <input type="hidden" asp-for="@Model.ProductId" />
+    <input type="hidden" asp-for="@Model.Language" />
+    <table width="100%">
+        <tr>
+            <td align="right">
+                <label><input id="rbLanguage1" type="radio" name="Language" value="English" />&nbsp;<label id="language1" for="rbLanguage1" style="color:white">ENGLISH</label></label>@Html.Raw("&nbsp;&nbsp;")
+                <label><input id="rbLanguage2" type="radio" name="Language" value="French" />&nbsp;<label id="language2" for="rbLanguage2" style="color:white">FRENCH</label></label>
+            </td>
+        </tr>
+    </table>
+    <table style="position:absolute; top:40%; height:80%; width:90%; text-align:center">
+        <tr>
+            <td>
+                <div id="banner" style="color: white; font-weight: bolder; font-size: 250%; line-height: 35px">WORK FROM HOME<br />CHAIR SELECTOR</div>
+                <br />
+                <div id="message" style="color: white; font-weight: bolder; font-size: 100%; line-height:65px">PLEASE INPUT YOUR EMAIL ADDRESS AND CLICK SUBMIT TO RECEIVE A LOG IN PIN</div>
+                <input asp-for="EmailAddress" type="email" placeholder="EMAIL" style="width:300px" />&nbsp;&nbsp;
+                <button type="submit" id="btnSubmit" class="btn btn-primary btn-sm" style="background-color: gray">SUBMIT</button>
+                <br /><br />
+                <label style="color:white; font-size:110%">@ViewBag.Results</label>
+            </td>
+        </tr>
+    </table>
+
+    <footer class="container-fluid footer text-muted" style="position:fixed; bottom:0px">
+        <div style="color:white; font-size:xx-small">
+            &copy; @DateTime.Now.Year - Allseating Corporation. All Rights Reserved.
+        </div>
+    </footer>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            SetLanguage();
+        });
+
+        $('input[name=Language]').change(function () {
+            $('#Language').val($('input[name=Language]:checked').val());
+            SetLanguage();
+        });
+
+        function SetLanguage() {
+            if ($('#Language').val() == "English") {
+                $('#rbLanguage1').prop('checked', true);
+                $('#banner').html("WORK FROM HOME<br />CHAIR SELECTOR");
+                $('#message').html("PLEASE INPUT YOUR EMAIL ADDRESS AND CLICK SUBMIT TO RECEIVE A LOG IN PIN");
+                $('#EmailAddress').attr("placeholder", "EMAIL");
+                $('#PIN').attr("placeholder", "UNIQUE PIN");
+                $('#btnSubmit').html("SUBMIT");
+            }
+            else {
+                $('#rbLanguage2').prop('checked', true);
+                $('#banner').html("TRAVAIL À DOMICILE<br />SÉLECTEUR DE CHAISE");
+                $('#message').html("VEUILLEZ SAISIR VOTRE ADRESSE EMAIL ET CLIQUEZ SUR SOUMETTRE POUR RECEVOIR UN PIN DE CONNEXION");
+                $('#EmailAddress').attr("placeholder", "EMAIL");
+                $('#PIN').attr("placeholder", "PIN UNIQUE");
+                $('#btnSubmit').html("SOUMETTRE");
+            }
+        }
+    </script>
+}
