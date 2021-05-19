@@ -22,5 +22,8 @@ namespace WFHMicrosite.Models
         public int CastorId { get; set; }
         public int ArmId { get; set; }
         public string Status { get; set; }
+        public string Message { get; set; }
+        public string ChairMessage1 { get; set; }
+        public string ChairMessage2 { get; set; }
     }
 }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -110,6 +112,13 @@ namespace WFHMicrosite.Controllers
             if (data.User.InProduction != null)
             {
                 return RedirectToAction("Complete", new { id = data.User.UserId });
+            }
+
+            string[] productMessage = configuration.GetValue<string>("AppSettings:Product~Message").Split('~');
+            if (productMessage.Length == 3)
+            {
+                data.ChairMessage1 = productMessage[0] == data.User.ProductId.ToString() ? " - " + productMessage[1] : "";
+                data.ChairMessage2 = productMessage[0] == data.User.ProductId.ToString() ? " - " + productMessage[2] : "";
             }
             if (data.Product.InstallGuide == null) data.Product.InstallGuide = "";
             if (data.Product.UserGuide == null) data.Product.UserGuide = "";
@@ -322,14 +331,14 @@ namespace WFHMicrosite.Controllers
             return PartialView("_Chair", data);
         }
 
-        public IActionResult Complete(int id)
+        public IActionResult Complete(string id)
         {
             string apiUrl = configuration.GetValue<string>("AppSettings:ApiUrl");
             UserProductModel data = new UserProductModel();
-            string json = SendWebApiMessage(apiUrl + "users/" + id, "GET", "");
+            string json = SendWebApiMessage(apiUrl + "users/s/" + id, "GET", "");
             data.User = JsonConvert.DeserializeObject<UserModel>(json);
             data.User.PhoneNumber = String.Format("{0:(###) ###-####}", data.User.PhoneNumber);
-            json = SendWebApiMessage(apiUrl + "userselections/" + id, "GET", "");
+            json = SendWebApiMessage(apiUrl + "userselections/" + data.User.UserId, "GET", "");
             data.UserSelections = JsonConvert.DeserializeObject<List<UserSelectionModel>>(json);
             json = SendWebApiMessage(apiUrl + "products/" + data.User.ProductId, "GET", "");
             data.Product = JsonConvert.DeserializeObject<ProductModel>(json);

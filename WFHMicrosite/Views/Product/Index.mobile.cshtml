@@ -13,9 +13,10 @@
     </style>
 }
 
-<br/>
-<form id="account" method="post">
+<br />
+<form id="index" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="@Model.Product.Chair" />
     <input type="hidden" asp-for="@Model.Product.ProductId" />
     <input type="hidden" asp-for="@Model.Product.InstallGuide" />
     <input type="hidden" asp-for="@Model.Product.UserGuide" />
@@ -23,9 +24,6 @@
     <input type="hidden" asp-for="@Model.Product.SitFitGuide" />
     <input type="hidden" asp-for="@Model.Product.Language" />
     <input type="hidden" asp-for="@Model.Product.VerifyOnly" />
-    <input type="hidden" asp-for="@Model.FabricId" />
-    <input type="hidden" asp-for="@Model.MeshId" />
-    <input type="hidden" asp-for="@Model.FrameId" />
     <input type="hidden" asp-for="@Model.User.UserId" />
     <input type="hidden" asp-for="@Model.User.Completed" />
     <input type="hidden" asp-for="@Model.User.EmailAddress" />
@@ -36,11 +34,20 @@
     <input type="hidden" asp-for="@Model.User.Shipped" />
     <input type="hidden" asp-for="@Model.User.Commercial" />
     <input type="hidden" asp-for="@Model.User.Language" />
+    <input type="hidden" asp-for="@Model.ChairMessage1" />
+    <input type="hidden" asp-for="@Model.ChairMessage2" />
 
     <table style="position:absolute; height:100%; width:90%; vertical-align:middle; text-align:center">
         <tr>
             <td>
-                <label style="font-size:150%; color:rgb(68,71,82); font-weight:bold">@Model.Product.Chair</label>
+                @if (Model.User.Language == "English")
+                {
+                    <label id="chairmessage" style="font-size:150%; color:rgb(68,71,82); font-weight:bold">@Model.Product.Chair @Model.ChairMessage1</label>
+                }
+                else
+                {
+                    <label id="chairmessage" style="font-size:150%; color:rgb(68,71,82); font-weight:bold">@Model.Product.Chair @Model.ChairMessage2</label>
+                }
             </td>
             <td style="font-size:small; float:right">
                 <label><input id="rbLanguage1" type="radio" name="Language" value="English" />&nbsp;<label id="language1" for="rbLanguage1">ENGLISH</label></label>@Html.Raw("&nbsp;&nbsp;")
@@ -55,68 +62,40 @@
         <tr>
             <td colspan="2" align="center">
                 <table style="border: 1px solid white; border-spacing: 0px">
-                    @if (Model.FabricId != 0)
+                    @if (Model.FabricOptions.Count > 0)
                     {
                         <tr>
-                            <td colspan="3"><label id="fabric">FABRIC</label></td>
+                            <td width="40%"><label id="fabric">FABRIC</label></td>
+                            <td width="60%"><select asp-for="FabricId" asp-items="@(new SelectList(Model.FabricOptions, "ProductOptionId","Name"))" style="width: 100%" onchange="GetPriceImage('Fabric');"></select></td>
                         </tr>
-                        var grouped = Model.FabricOptions.Where(d => d.Disabled == false).Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
-                        @foreach (var items in grouped)
-                        {
-                            <tr>
-                                @foreach (var item in items)
-                                {
-                                    <td>
-                                        <label>
-                                            <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
-                                            <input type="radio" name="Fabric" value="@item.ProductOptionId" id="Fabric@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
-                                        </label>
-                                    </td>
-                                }
-                            </tr>
-                        }
                     }
-                    @if (Model.MeshId != 0)
+                    @if (Model.MeshOptions.Count > 0)
                     {
                         <tr>
-                            <td colspan="3"><label id="mesh">MESH</label></td>
+                            <td width="40%"><label id="mesh">MESH</label></td>
+                            <td width="60%"><select asp-for="MeshId" asp-items="@(new SelectList(Model.MeshOptions, "ProductOptionId","Name"))" style="width: 100%" onchange="GetPriceImage('Mesh');"></select></td>
                         </tr>
-                        var grouped = Model.MeshOptions.Where(d => d.Disabled == false).Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
-                        @foreach (var items in grouped)
-                        {
-                            <tr>
-                                @foreach (var item in items)
-                                {
-                                    <td>
-                                        <label>
-                                            <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
-                                            <input type="radio" name="Mesh" value="@item.ProductOptionId" id="Fabric@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
-                                        </label>
-                                    </td>
-                                }
-                            </tr>
-                        }
                     }
-                    @if (Model.FrameId != 0)
+                    @if (Model.FrameOptions.Count > 0)
                     {
                         <tr>
-                            <td colspan="3"><label id="frame">FRAME</label></td>
+                            <td width="40%"><label id="frame">FRAME</label></td>
+                            <td width="60%"><select asp-for="FrameId" asp-items="@(new SelectList(Model.FrameOptions, "ProductOptionId","Name"))" style="width: 100%" onchange="GetPriceImage('Frame');"></select></td>
                         </tr>
-                        var grouped = Model.FrameOptions.Where(d => d.Disabled == false).Select((x, i) => new { x, i = i / 3 }).GroupBy(x => x.i, x => x.x);
-                        @foreach (var items in grouped)
-                        {
-                            <tr>
-                                @foreach (var item in items)
-                                {
-                                    <td>
-                                        <label>
-                                            <img src="data:image;base64,@System.Convert.ToBase64String(item.Image)" />&nbsp;&nbsp;<br />
-                                            <input type="radio" name="Frame" value="@item.ProductOptionId" id="Fabric@(item.ProductOptionId)" checked="@item.Default" />&nbsp;<label style="font-size:small">@item.Name</label>
-                                        </label>
-                                    </td>
-                                }
-                            </tr>
-                        }
+                    }
+                    @if (Model.ArmOptions.Count > 0)
+                    {
+                        <tr>
+                            <td width="40%"><label id="arms">ARMS</label></td>
+                            <td width="60%"><select asp-for="ArmId" asp-items="@(new SelectList(Model.ArmOptions, "ProductOptionId","Name"))" style="width: 100%"></select></td>
+                        </tr>
+                    }
+                    @if (Model.CastorOptions.Count > 0)
+                    {
+                        <tr>
+                            <td width="40%"><label id="castors">CASTORS</label></td>
+                            <td width="60%"><select asp-for="CastorId" asp-items="@(new SelectList(Model.CastorOptions, "ProductOptionId","Name"))" style="width: 100%"></select></td>
+                        </tr>
                     }
                     <tr>
                         <td colspan="3">
@@ -249,29 +228,20 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         $(document).ready(function () {
+            $('#copyRite').css('color', 'black');
             $('#findAddress').val("");
-            SetLanguage();
             if ($('#User_Commercial').val().toLowerCase() == "false") {
                 $('#rbType1').prop('checked', true);
             }
             else {
                 $('#rbType2').prop('checked', true);
             }
+            SetLanguage();
         });
 
         // Prevent enter key press from submitting form
         $(document).on("keydown", "input", function (e) {
             if (e.which == 13) e.preventDefault();
-        });
-
-        $('input[name=Fabric]').change(function () {
-            GetImage();
-        });
-        $('input[name=Mesh]').change(function () {
-            GetImage();
-        });
-        $('input[name=Frame]').change(function () {
-            GetImage();
         });
 
         $('input[name=AddressType]').change(function () {
@@ -284,10 +254,18 @@
 
         $('input[name=Language]').change(function () {
             $('#User_Language').val($('input[name=Language]:checked').val());
-            SetLanguage();
             $('#successResults').html("");
             $('#errorResults').html("");
+            SetLanguage();
         });
+
+        function FormatOptions(state) {
+            if (!state.id) { return state.text; }
+            var $path = window.location.href;
+            var $image = $path.substring(0, $path.indexOf("Product")) + "images/" + state.element.text.replace(" ", "%20") + ".png";
+            var $state = $('<span><img style="display: inline-block;" height="30" width="32" src=' + $image + ' /> ' + state.text + '</span>');
+            return $state;
+        }
 
         function reloadPage() {
             location.reload();
@@ -296,15 +274,19 @@
         function SetLanguage() {
             if ($('#User_Language').val() == "English") {
                 $('#rbLanguage1').prop('checked', true);
+                $('#chairmessage').html($('#Product_Chair').val() + " " + $('#ChairMessage1').val());
                 $('#language1').html("ENGLISH");
                 $('#language2').html("FRENCH");
                 $('#fabric').html("FABRIC");
                 $('#mesh').html("MESH");
                 $('#frame').html("FRAME");
+                $('#arms').html("ARMS");
+                $('#castors').html("CASTORS");
                 $('#support').html("SUPPORT");
                 $('#btnInstall').val("ASSEMBLY INSTRUCTIONS");
                 $('#btnUser').val("USER GUIDE");
                 $('#btnVideo').val("VIDEO USER GUIDE");
+                $('#btnSitFit').val("SIT FIT TIPS");
                 $('#addrType1').html("RESIDENTIAL");
                 $('#addrType2').html("COMMERCIAL");
                 $('#findAddress').attr("placeholder", "Enter your address to search");
@@ -319,26 +301,48 @@
                 $('#User_SpecialInstructions').attr("placeholder", "SPECIAL INSTRUCTIONS");
                 if ($('#Product_VerifyOnly').val().toLowerCase() == "true") {
                     $('#btnSubmit').html("VERIFY");
+                    $('#impMessage').html("Please remember click the Verify button to complete order!");
                 }
                 else {
                     $('#btnSubmit').html("SUBMIT");
+                    $('#impMessage').html("Please remember click the Submit button to complete order!");
                 }
                 $('#btnReset').html("RESET");
                 $('#message').html("Ensure all selections are<br/>made to submit successfully.");
+                $("#ArmId option").each(function () {
+                    if (this.text == "Sans Accoudoirs") {
+                        this.text = "No Arms";
+                    }
+                    if (this.text == "Accoudoirs 4D") {
+                        this.text = "4D Arms";
+                    }
+                });
+                $("#CastorId option").each(function () {
+                    if (this.text == "Plancher de Tapis") {
+                        this.text = "Carpet";
+                    }
+                    if (this.text == "Planchers à Revêtement Dur") {
+                        this.text = "Hard Surface";
+                    }
+                });
             }
             else {
                 $('#rbLanguage2').prop('checked', true);
+                $('#chairmessage').html($('#Product_Chair').val() + " " + $('#ChairMessage2').val());
                 $('#language1').html("ANGLAIS");
                 $('#language2').html("FRANÇAIS");
-                $('#fabric').html("EN TISSU");
-                $('#mesh').html("ENGRENER");
-                $('#frame').html("LE CHÂSSIS");
+                $('#fabric').html("ASSISE EN TISSU");
+                $('#mesh').html("MAILLE");
+                $('#frame').html("BÂTI");
+                $('#arms').html("ACCOUDOIRS");
+                $('#castors').html("ROULETTES");
                 $('#support').html("LE SUPPORT");
                 $('#btnInstall').val("INSTRUCTIONS DE MONTAGE");
                 $('#btnUser').val("MODE D'EMPLOI");
                 $('#btnVideo').val("GUIDE D'UTILISATION VIDÉO");
-                $('#addrType1').html("RÉSIDENTIEL");
-                $('#addrType2').html("COMMERCIAL");
+                $('#btnSitFit').val("CONSEILS ERGO");
+                $('#addrType1').html("RÉSIDENTIELLE");
+                $('#addrType2').html("COMMERCIALE");
                 $('#findAddress').attr("placeholder", "Entrez votre adresse pour rechercher");
                 $('#User_AttnName').attr("placeholder", "NOM");
                 $('#User_PhoneNumber').attr("placeholder", "TÉLÉPHONE #NOM");
@@ -351,26 +355,71 @@
                 $('#User_SpecialInstructions').attr("placeholder", "INSTRUCTIONS SPÉCIALES");
                 if ($('#Product_VerifyOnly').val().toLowerCase() == "true") {
                     $('#btnSubmit').html("VÉRIFIER");
+                    $('#impMessage').html("N’oubliez pas de cliquer sur le bouton Vérifier pour terminer la commande!");
                 }
                 else {
                     $('#btnSubmit').html("SOUMETTRE");
+                    $('#impMessage').html("N’oubliez pas de cliquer sur le bouton Soumettre pour terminer la commande!");
                 }
                 $('#btnReset').html("REMONTER");
                 $('#message').html("Assurez-vous que toutes les sélections<br/>sont faites pour soumettre avec succès.");
+                $("#ArmId option").each(function () {
+                    if (this.text == "No Arms") {
+                        this.text = "Sans Accoudoirs";
+                    }
+                    if (this.text == "4D Arms") {
+                        this.text = "Accoudoirs 4D";
+                    }
+                });
+                $("#CastorId option").each(function () {
+                    if (this.text == "Carpet") {
+                        this.text = "Plancher de Tapis";
+                    }
+                    if (this.text == "Hard Surface") {
+                        this.text = "Planchers à Revêtement Dur";
+                    }
+                });
             }
+            $('#FabricId').select2({
+                templateResult: FormatOptions,
+                minimumResultsForSearch: 10
+            });
+            $('#MeshId').select2({
+                templateResult: FormatOptions,
+                minimumResultsForSearch: 10
+            });
+            $('#FrameId').select2({
+                templateResult: FormatOptions,
+                minimumResultsForSearch: 10
+            });
+            $('#ArmId').select2({
+                minimumResultsForSearch: 10
+            });
+            $('#CastorId').select2({
+                minimumResultsForSearch: 10
+            });
+            $("#ArmId").reload();
+            $("#CastorId").reload();
         }
 
-        function GetImage() {
-            var product = $('#Product_ProductId').val();
-            var fabric = $('input[name=Fabric]:checked').val();
-            var mesh = $('input[name=Mesh]:checked').val();
-            var frame = $('input[name=Frame]:checked').val();
-            $('#FabricId').val(fabric);
-            $('#MeshId').val(mesh);
-            $('#FrameId').val(frame);
-            $.get("@Url.Action("ChairPartial", "Product")", { product: product, option1: fabric, option2: mesh, option3: frame }, function (data) {
-                $('#divImage').html(data);
-            });
+        function GetPriceImage(type) {
+            var name = "";
+            switch (type) {
+                case "Fabric":
+                    name = $('#FabricId option:selected').text();
+                    break;
+                case "Mesh":
+                    name = $('#MeshId option:selected').text();
+                    break;
+                case "Frame":
+                    name = $('#FrameId option:selected').text();
+                    break;
+            }
+            if (name != "") {
+                var path = window.location.href;
+                var image = "<img src='" + path.substring(0, path.indexOf("Product")) + "images/" + name.replace(" ", "%20") + ".png' width='200' height='200' />";
+                $.colorbox({ html: "" + image + "", title: "" + name + "", top: 200, left: "50%" });
+            }
         }
 
         $("#findAddress").autocomplete({
@@ -388,12 +437,12 @@
             select: function (event, ui) {
                 if (ui.item) {
                     var address = ui.item.value.split(",");
-                    $('#User_Address1').val(address[0].trim());
+                    $('#User_Address1').val(address[0]);
                     $('#User_Address2').val("");
-                    $('#User_City').val(address[1].trim());
-                    $('#User_ProvinceState').val(address[2].substring(1, 3).trim());
-                    $('#User_PostalZip').val(address[2].substring(4).trim());
-                    $('#User_Country').val(address[3].trim());
+                    $('#User_City').val(address[1]);
+                    $('#User_ProvinceState').val(address[2].substring(1, 3));
+                    $('#User_PostalZip').val(address[2].substring(4));
+                    $('#User_Country').val(address[3]);
                     $('#findAddress').val("");
                 }
             }

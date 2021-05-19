@@ -12,8 +12,9 @@
     </style>
 }
 
-<form id="account" method="post">
+<form id="index" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="@Model.Product.Chair" />
     <input type="hidden" asp-for="@Model.Product.ProductId" />
     <input type="hidden" asp-for="@Model.Product.InstallGuide" />
     <input type="hidden" asp-for="@Model.Product.UserGuide" />
@@ -31,12 +32,21 @@
     <input type="hidden" asp-for="@Model.User.Shipped" />
     <input type="hidden" asp-for="@Model.User.Commercial" />
     <input type="hidden" asp-for="@Model.User.Language" />
+    <input type="hidden" asp-for="@Model.ChairMessage1" />
+    <input type="hidden" asp-for="@Model.ChairMessage2" />
     <br />
     <div style="max-width:1800px; margin:auto">
         <table width="100%">
             <tr>
                 <td colspan="2">
-                    <label style="font-size:150%; color:rgb(68,71,82); font-weight:bold">@Model.Product.Chair</label>
+                    @if (Model.User.Language == "English")
+                    {
+                        <label id="chairmessage" style="font-size:150%; color:rgb(68,71,82); font-weight:bold">@Model.Product.Chair @Model.ChairMessage1</label>
+                    }
+                    else
+                    {
+                        <label id="chairmessage" style="font-size:150%; color:rgb(68,71,82); font-weight:bold">@Model.Product.Chair @Model.ChairMessage2</label>
+                    }
                 </td>
                 <td align="right" style="font-size:small">
                     <label><input id="rbLanguage1" type="radio" name="Language" value="English" />&nbsp;<label id="language1" for="rbLanguage1">ENGLISH</label></label>@Html.Raw("&nbsp;&nbsp;")
@@ -49,35 +59,35 @@
                 </td>
                 <td width="30%" style="vertical-align:top">
                     <table style="border: 1px solid white; border-spacing: 20px">
-                        @if (Model.FabricOptions.Count > 1)
+                        @if (Model.FabricOptions.Count > 0)
                         {
                             <tr>
                                 <td width="40%"><label id="fabric">FABRIC</label></td>
                                 <td width="60%"><select asp-for="FabricId" asp-items="@(new SelectList(Model.FabricOptions, "ProductOptionId","Name"))" style="width: 100%" onchange="GetPriceImage('Fabric');"></select></td>
                             </tr>
                         }
-                        @if (Model.MeshOptions.Count > 1)
+                        @if (Model.MeshOptions.Count > 0)
                         {
                             <tr>
                                 <td width="40%"><label id="mesh">MESH</label></td>
                                 <td width="60%"><select asp-for="MeshId" asp-items="@(new SelectList(Model.MeshOptions, "ProductOptionId","Name"))" style="width: 100%" onchange="GetPriceImage('Mesh');"></select></td>
                             </tr>
                         }
-                        @if (Model.FrameOptions.Count > 1)
+                        @if (Model.FrameOptions.Count > 0)
                         {
                             <tr>
                                 <td width="40%"><label id="frame">FRAME</label></td>
                                 <td width="60%"><select asp-for="FrameId" asp-items="@(new SelectList(Model.FrameOptions, "ProductOptionId","Name"))" style="width: 100%" onchange="GetPriceImage('Frame');"></select></td>
                             </tr>
                         }
-                        @if (Model.ArmOptions.Count > 1)
+                        @if (Model.ArmOptions.Count > 0)
                         {
                             <tr>
                                 <td width="40%"><label id="arms">ARMS</label></td>
                                 <td width="60%"><select asp-for="ArmId" asp-items="@(new SelectList(Model.ArmOptions, "ProductOptionId","Name"))" style="width: 100%"></select></td>
                             </tr>
                         }
-                        @if (Model.CastorOptions.Count > 1)
+                        @if (Model.CastorOptions.Count > 0)
                         {
                             <tr>
                                 <td width="40%"><label id="castors">CASTORS</label></td>
@@ -212,13 +222,13 @@
         $(document).ready(function () {
             $('#copyRite').css('color', 'black');
             $('#findAddress').val("");
-            SetLanguage();
             if ($('#User_Commercial').val().toLowerCase() == "false") {
                 $('#rbType1').prop('checked', true);
             }
             else {
                 $('#rbType2').prop('checked', true);
             }
+            SetLanguage();
         });
 
         // Prevent enter key press from submitting form
@@ -236,9 +246,9 @@
 
         $('input[name=Language]').change(function () {
             $('#User_Language').val($('input[name=Language]:checked').val());
-            SetLanguage();
             $('#successResults').html("");
             $('#errorResults').html("");
+            SetLanguage();
         });
 
         function FormatOptions(state) {
@@ -256,6 +266,7 @@
         function SetLanguage() {
             if ($('#User_Language').val() == "English") {
                 $('#rbLanguage1').prop('checked', true);
+                $('#chairmessage').html($('#Product_Chair').val() + " " + $('#ChairMessage1').val());
                 $('#language1').html("ENGLISH");
                 $('#language2').html("FRENCH");
                 $('#fabric').html("FABRIC");
@@ -309,11 +320,12 @@
             }
             else {
                 $('#rbLanguage2').prop('checked', true);
+                $('#chairmessage').html($('#Product_Chair').val() + " " + $('#ChairMessage2').val());
                 $('#language1').html("ANGLAIS");
                 $('#language2').html("FRANÇAIS");
                 $('#fabric').html("ASSISE EN TISSU");
-                $('#mesh').html("DOSSIER EN MÉCHE");
-                $('#frame').html("LE CHÂSSIS");
+                $('#mesh').html("MAILLE");
+                $('#frame').html("BÂTI");
                 $('#arms').html("ACCOUDOIRS");
                 $('#castors').html("ROULETTES");
                 $('#support').html("LE SUPPORT");
@@ -335,11 +347,11 @@
                 $('#User_SpecialInstructions').attr("placeholder", "INSTRUCTIONS SPÉCIALES");
                 if ($('#Product_VerifyOnly').val().toLowerCase() == "true") {
                     $('#btnSubmit').html("VÉRIFIER");
-                    $('#impMessage').html("N’oubliez pas de cliquer sur le bouton Vérifier pour terminer l’ordre!");
+                    $('#impMessage').html("N’oubliez pas de cliquer sur le bouton Vérifier pour terminer la commande!");
                 }
                 else {
                     $('#btnSubmit').html("SOUMETTRE");
-                    $('#impMessage').html("N’oubliez pas de cliquer sur le bouton Soumettre pour terminer l’ordre!");
+                    $('#impMessage').html("N’oubliez pas de cliquer sur le bouton Soumettre pour terminer la commande!");
                 }
                 $('#btnReset').html("REMONTER");
                 $('#message').html("Assurez-vous que toutes les sélections<br/>sont faites pour soumettre avec succès.");
